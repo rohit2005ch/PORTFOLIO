@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#F6F8FB" />
+<meta name="mobile-web-app-capable" content="yes" />
+<title>Rohit Chauhan — Junior Software Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#F6F8FB;
+    --panel:#FFFFFF;
+    --panel-2:#EDF1F7;
+    --trace:#DCE3ED;
+    --trace-bright:#A9B6C9;
+    --text:#16202F;
+    --muted:#5C6B80;
+    --teal:#0E9C8C;
+    --teal-dim:rgba(14,156,140,0.12);
+    --amber:#C4740B;
+    --amber-dim:rgba(196,116,11,0.14);
+    --deep:#0B0F19;
+    --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth; -webkit-text-size-adjust:100%;}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+    width:100%;
+    -webkit-overflow-scrolling:touch;
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+  }
+  img, svg, canvas{max-width:100%;}
+  ::selection{background:var(--teal); color:#FFFFFF;}
+
+  h1,h2,h3,h4{font-family:'Space Grotesk', sans-serif; font-weight:600; letter-spacing:-0.01em;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  a{color:var(--teal); text-decoration:none;}
+
+  ::-webkit-scrollbar{width:10px;}
+  ::-webkit-scrollbar-track{background:var(--ink);}
+  ::-webkit-scrollbar-thumb{background:var(--trace-bright); border-radius:10px;}
+
+  /* ---------- Layout shells ---------- */
+  .wrap{max-width:1080px; margin:0 auto; padding:0 32px;}
+  section{position:relative; padding:120px 0;}
+  @media (max-width:640px){
+    section{padding:80px 0;}
+    .wrap{padding:0 20px;}
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    font-size:12.5px;
+    color:var(--teal);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:22px; height:1px;
+    background:var(--teal);
+    display:inline-block;
+  }
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(246,248,251,0.78);
+    -webkit-backdrop-filter:blur(14px);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--trace);
+    padding-top:env(safe-area-inset-top);
+  }
+  .nav-inner{
+    max-width:1080px; margin:0 auto; padding:18px 32px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .nav-brand{font-family:'Space Grotesk'; font-weight:700; font-size:17px; letter-spacing:0.02em;}
+  .nav-brand span{color:var(--teal);}
+  .nav-links{display:flex; gap:28px; list-style:none;}
+  .nav-links a{
+    color:var(--muted); font-size:14px; font-weight:500;
+    transition:color 0.2s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .nav-links a:hover{color:var(--text);}
+
+  .nav-toggle{
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    gap:5px;
+    width:36px; height:36px;
+    background:none; border:none;
+    cursor:pointer;
+    padding:0;
+  }
+  .nav-toggle span{
+    display:block; width:100%; height:2px;
+    background:var(--text);
+    border-radius:2px;
+    transition:transform 0.25s ease, opacity 0.25s ease;
+  }
+  .nav-toggle.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2){ opacity:0; }
+  .nav-toggle.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+  @media (max-width:700px){
+    .nav-toggle{display:flex;}
+    .nav-links{
+      position:fixed;
+      top:0; right:0;
+      height:100vh;
+      height:100dvh;
+      width:min(78vw, 300px);
+      background:var(--panel);
+      border-left:1px solid var(--trace);
+      flex-direction:column;
+      justify-content:center;
+      gap:0;
+      padding:40px;
+      transform:translateX(100%);
+      transition:transform 0.3s ease;
+      z-index:99;
+    }
+    .nav-links.open{ transform:translateX(0); }
+    .nav-links li{ border-bottom:1px solid var(--trace); }
+    .nav-links a{
+      display:block;
+      padding:18px 4px;
+      font-size:16px;
+    }
+    .nav-backdrop{
+      display:none;
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.5);
+      z-index:98;
+    }
+    .nav-backdrop.open{ display:block; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex; align-items:center;
+    padding-top:calc(80px + env(safe-area-inset-top));
+    padding-bottom:40px;
+    position:relative;
+  }
+  #hero-canvas{
+    position:absolute; top:0; right:0;
+    width:100%; height:100%;
+    opacity:0.9;
+    pointer-events:none;
+  }
+  .hero-content{position:relative; z-index:2; max-width:640px;}
+  .hero-content h1{
+    font-size:clamp(2.6rem, 6vw, 4.4rem);
+    line-height:1.04;
+    margin-bottom:20px;
+  }
+  .hero-content .role{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--amber);
+    font-size:15px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    margin-bottom:24px;
+    display:block;
+  }
+  .hero-content p{
+    color:var(--muted);
+    font-size:17px;
+    max-width:520px;
+    margin-bottom:36px;
+  }
+  .hero-cta{display:flex; gap:16px; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:13px 24px;
+    border-radius:8px;
+    font-weight:600;
+    font-size:14.5px;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:transform 0.15s ease, border-color 0.2s, background 0.2s;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--teal); color:#FFFFFF;}
+  .btn-primary:hover{background:#0B8477;}
+  .btn-ghost{border-color:var(--trace-bright); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--teal); color:var(--teal);}
+
+  .hero-loc{
+    margin-top:56px; display:flex; gap:28px; flex-wrap:wrap;
+    font-family:'JetBrains Mono'; font-size:12.5px; color:var(--muted);
+  }
+  .hero-loc div{display:flex; align-items:center; gap:8px;}
+  .dot{width:6px; height:6px; border-radius:50%; background:var(--teal); flex-shrink:0;}
+
+  /* ---------- Circuit divider ---------- */
+  .trace-divider{
+    display:flex; align-items:center; gap:0;
+    padding:0 0;
+  }
+  .trace-line{flex:1; height:1px; background:var(--trace);}
+  .trace-node{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--teal);
+    box-shadow:0 0 12px var(--teal);
+    flex-shrink:0; margin:0 14px;
+  }
+
+  /* ---------- Section headers ---------- */
+  .section-head{margin-bottom:56px; max-width:600px;}
+  .section-head h2{font-size:clamp(1.9rem, 3.4vw, 2.6rem);}
+  .section-head p{color:var(--muted); margin-top:14px; font-size:15.5px;}
+
+  /* ---------- About ---------- */
+  .about-grid{
+    display:grid; grid-template-columns:1.3fr 1fr; gap:56px;
+    align-items:start;
+  }
+  @media (max-width:800px){ .about-grid{grid-template-columns:1fr;} }
+  .about-text p{color:var(--muted); font-size:16px; margin-bottom:18px;}
+  .stat-card{
+    background:var(--panel);
+    border:1px solid var(--trace);
+    border-radius:var(--radius);
+    padding:24px;
+    margin-bottom:16px;
+    box-shadow:0 2px 10px rgba(22,32,47,0.05);
+  }
+  .stat-card .num{
+    font-family:'Space Grotesk'; font-size:2.1rem; color:var(--teal); font-weight:700;
+  }
+  .stat-card .label{color:var(--muted); font-size:13px; margin-top:4px; font-family:'JetBrains Mono';}
+
+  /* ---------- Skills ---------- */
+  .skill-groups{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:800px){ .skill-groups{grid-template-columns:1fr;} }
+  .skill-card{
+    background:var(--panel);
+    border:1px solid var(--trace);
+    border-radius:var(--radius);
+    padding:26px;
+    box-shadow:0 2px 10px rgba(22,32,47,0.05);
+    transition:transform 0.25s ease, border-color 0.25s, box-shadow 0.25s;
+    transform-style:preserve-3d;
+    will-change:transform;
+  }
+  .skill-card:hover{
+    border-color:var(--teal);
+    box-shadow:0 20px 40px -20px rgba(14,156,140,0.3);
+  }
+  .skill-card h4{font-size:15px; color:var(--teal); margin-bottom:14px; font-family:'JetBrains Mono'; text-transform:uppercase; letter-spacing:0.05em;}
+  .tag-list{display:flex; flex-wrap:wrap; gap:8px;}
+  .tag{
+    background:var(--panel-2);
+    border:1px solid var(--trace);
+    padding:6px 12px;
+    border-radius:6px;
+    font-size:13px;
+    color:var(--text);
+  }
+
+  /* ---------- Timeline (Internships & Education) ---------- */
+  .timeline{position:relative; padding-left:32px; border-left:1px solid var(--trace);}
+  .tl-item{position:relative; padding-bottom:42px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{
+    content:''; position:absolute; left:-37px; top:4px;
+    width:11px; height:11px; border-radius:50%;
+    background:var(--ink); border:2px solid var(--teal);
+  }
+  .tl-date{font-family:'JetBrains Mono'; font-size:12.5px; color:var(--amber); margin-bottom:6px; display:block;}
+  .tl-item h4{font-size:18px; margin-bottom:4px;}
+  .tl-item .org{color:var(--muted); font-size:14px; margin-bottom:10px;}
+  .tl-item p{color:var(--muted); font-size:14.5px;}
+
+  /* ---------- Projects ---------- */
+  .project-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media (max-width:760px){ .project-grid{grid-template-columns:1fr;} }
+  .project-card{
+    background:var(--panel);
+    border:1px solid var(--trace);
+    border-radius:var(--radius);
+    padding:30px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 2px 10px rgba(22,32,47,0.05);
+    transition:transform 0.3s ease, border-color 0.3s;
+  }
+  .project-card:hover{border-color:var(--amber);}
+  .project-card::after{
+    content:'';
+    position:absolute; top:-40%; right:-30%;
+    width:220px; height:220px;
+    background:radial-gradient(circle, var(--teal-dim), transparent 70%);
+    pointer-events:none;
+  }
+  .project-card .pnum{font-family:'JetBrains Mono'; color:var(--trace-bright); font-size:13px; margin-bottom:14px;}
+  .project-card h3{font-size:20px; margin-bottom:12px;}
+  .project-card p{color:var(--muted); font-size:14.5px; margin-bottom:18px;}
+  .stack-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .stack-row span{
+    font-family:'JetBrains Mono'; font-size:11.5px;
+    color:var(--teal); background:var(--teal-dim);
+    padding:4px 9px; border-radius:5px;
+  }
+
+  /* ---------- Certificates / Achievements ---------- */
+  .pill-row{display:flex; flex-wrap:wrap; gap:14px;}
+  .pill{
+    background:var(--panel);
+    border:1px solid var(--trace);
+    border-radius:999px;
+    padding:12px 20px;
+    font-size:14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .pill .dot{background:var(--amber);}
+
+  /* ---------- Feedback ---------- */
+  .feedback-note{
+    background:var(--amber-dim);
+    border:1px solid rgba(196,116,11,0.3);
+    color:var(--amber);
+    font-size:13px;
+    padding:12px 16px;
+    border-radius:8px;
+    margin-bottom:28px;
+    font-family:'JetBrains Mono';
+  }
+  .feedback-layout{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
+  @media (max-width:800px){ .feedback-layout{grid-template-columns:1fr;} }
+  .form-group{margin-bottom:18px;}
+  .form-group label{
+    display:block; font-size:13px; color:var(--muted);
+    margin-bottom:8px; font-family:'JetBrains Mono'; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .form-group input, .form-group textarea{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--trace);
+    border-radius:8px;
+    padding:12px 14px;
+    color:var(--text);
+    font-family:'Inter';
+    font-size:14.5px;
+    resize:vertical;
+  }
+  .form-group input:focus, .form-group textarea:focus{
+    outline:none; border-color:var(--teal);
+  }
+  .star-row{display:flex; gap:4px;}
+  .star{
+    font-size:26px; cursor:pointer; color:var(--trace-bright);
+    transition:color 0.15s, transform 0.15s;
+    padding:6px;
+    line-height:1;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .star.active, .star:hover{color:var(--amber);}
+  .star:active{transform:scale(1.15);}
+
+  @media (max-width:480px){
+    .form-group input, .form-group textarea{ font-size:16px; }
+  }
+  .submit-status{font-size:13px; margin-top:10px; font-family:'JetBrains Mono'; min-height:18px;}
+  .submit-status.ok{color:var(--teal);}
+  .submit-status.err{color:#F2745A;}
+
+  .feedback-wall{max-height:520px; overflow-y:auto; padding-right:6px;}
+  .feedback-item{
+    background:var(--panel);
+    border:1px solid var(--trace);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:14px;
+    box-shadow:0 2px 8px rgba(22,32,47,0.04);
+  }
+  .feedback-item .fb-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
+  .feedback-item .fb-name{font-weight:600; font-size:14.5px;}
+  .feedback-item .fb-stars{color:var(--amber); font-size:13px;}
+  .feedback-item .fb-msg{color:var(--muted); font-size:14px;}
+  .feedback-item .fb-time{font-family:'JetBrains Mono'; font-size:11px; color:var(--trace-bright); margin-top:8px;}
+  .fb-empty{color:var(--muted); font-size:14px; font-style:italic;}
+  .fb-loading{color:var(--muted); font-size:13px; font-family:'JetBrains Mono';}
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top:1px solid var(--trace);
+    padding:48px 0;
+    text-align:center;
+    color:var(--muted);
+    font-size:13.5px;
+  }
+  footer .social{display:flex; justify-content:center; gap:24px; margin-bottom:18px;}
+  footer .social a{color:var(--text); font-weight:500;}
+  footer .social a:hover{color:var(--teal);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">ROHIT<span>.</span>DEV</div>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#feedback">Feedback</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="wrap">
+    <div class="hero-content">
+      <span class="role">Junior Software Developer</span>
+      <h1>Rohit Chauhan builds practical software with a designer's eye.</h1>
+      <p>Computer Engineering diploma student from Mandi, Himachal Pradesh — working across Python, PHP, and the web stack, with hands-on design chops in Figma and Photoshop.</p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#feedback" class="btn btn-ghost">Leave Feedback</a>
+      </div>
+      <div class="hero-loc">
+        <div><span class="dot"></span>Mandi, Himachal Pradesh</div>
+        <div><span class="dot"></span>CGPA 8.11/10</div>
+        <div><span class="dot"></span>Open to junior dev roles</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="trace-divider"><div class="trace-line"></div><div class="trace-node"></div><div class="trace-line"></div></div></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">About</div>
+      <h2>Grounded in fundamentals, curious by default.</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm a diploma student in Computer Engineering at ABVGIET Pragtinagar, building a solid foundation in Python, C, MySQL, and the web stack. My interest sits right at the intersection of writing clean, functional code and shaping how it looks and feels to use.</p>
+        <p>Through a series of internships and academic projects, I've picked up hands-on experience across GUI development, database-backed applications, and interface design — and I'm quick to pick up whatever a project actually needs, rather than sticking to one lane.</p>
+        <p>Right now I'm looking for junior developer opportunities where I can keep building practical, scalable software alongside people who'll teach me more than I already know.</p>
+      </div>
+      <div>
+        <div class="stat-card">
+          <div class="num">8.11</div>
+          <div class="label">CGPA / DIPLOMA IN COMPUTER ENGINEERING</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">3</div>
+          <div class="label">INTERNSHIPS COMPLETED</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">2</div>
+          <div class="label">INDEPENDENT PROJECTS SHIPPED</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="trace-divider"><div class="trace-line"></div><div class="trace-node"></div><div class="trace-line"></div></div></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Skills</div>
+      <h2>The stack, and the sensibility behind it.</h2>
+      <p>Move your cursor over a card — it tilts, like everything else here reacting to you.</p>
+    </div>
+    <div class="skill-groups">
+      <div class="skill-card tilt">
+        <h4>Languages & Web</h4>
+        <div class="tag-list">
+          <span class="tag">Python</span><span class="tag">C</span><span class="tag">PHP</span>
+          <span class="tag">HTML5</span><span class="tag">CSS3</span><span class="tag">JavaScript</span>
+        </div>
+      </div>
+      <div class="skill-card tilt">
+        <h4>Database & Core</h4>
+        <div class="tag-list">
+          <span class="tag">MySQL</span><span class="tag">GUI Development</span><span class="tag">Database Management</span>
+        </div>
+      </div>
+      <div class="skill-card tilt">
+        <h4>Design Tools</h4>
+        <div class="tag-list">
+          <span class="tag">Figma</span><span class="tag">Adobe Photoshop</span><span class="tag">UI/UX</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="trace-divider"><div class="trace-line"></div><div class="trace-node"></div><div class="trace-line"></div></div></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Experience</div>
+      <h2>Internships & education, in order.</h2>
+    </div>
+    <div class="about-grid">
+      <div>
+        <h3 style="margin-bottom:24px; font-size:18px; color:var(--muted);">Internships — Advance Technology, Sundernagar</h3>
+        <div class="timeline">
+          <div class="tl-item">
+            <span class="tl-date">JULY 2025 · 4 WEEKS</span>
+            <h4>Graphics Design Intern</h4>
+            <div class="org">Advance Technology, Sundernagar</div>
+            <p>Designed professional logos and digital marketing assets, and created high-fidelity UI layouts using Figma and Photoshop.</p>
+          </div>
+          <div class="tl-item">
+            <span class="tl-date">JANUARY 2025 · 3 WEEKS</span>
+            <h4>Python Intern</h4>
+            <div class="org">Advance Technology, Sundernagar</div>
+            <p>Developed a GUI-based calculator application using Python.</p>
+          </div>
+          <div class="tl-item">
+            <span class="tl-date">AUGUST 2024 · 45 DAYS</span>
+            <h4>C Programming Intern</h4>
+            <div class="org">Advance Technology, Sundernagar</div>
+            <p>Executed structured programming techniques to solve algorithmic challenges.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:24px; font-size:18px; color:var(--muted);">Education</h3>
+        <div class="timeline">
+          <div class="tl-item">
+            <span class="tl-date">2023 – 2026</span>
+            <h4>Diploma in Computer Engineering</h4>
+            <div class="org">ABVGIET Pragtinagar (Shimla) · CGPA 8.11/10</div>
+          </div>
+          <div class="tl-item">
+            <span class="tl-date">2022 – 2023</span>
+            <h4>Senior Secondary</h4>
+            <div class="org">Govt. Model Sr. Sec. School, Janjehli (Mandi) · 74%</div>
+          </div>
+          <div class="tl-item">
+            <span class="tl-date">2020 – 2021</span>
+            <h4>Matriculation</h4>
+            <div class="org">Govt. Model Sr. Sec. School, Janjehli (Mandi) · 77%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="trace-divider"><div class="trace-line"></div><div class="trace-node"></div><div class="trace-line"></div></div></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Projects</div>
+      <h2>Things I've built end to end.</h2>
+    </div>
+    <div class="project-grid">
+      <div class="project-card">
+        <div class="pnum">PROJECT / 01</div>
+        <h3>e-Learning Website</h3>
+        <p>A responsive educational platform built with a focus on intuitive UI/UX — designed so course content stays easy to navigate on any screen size.</p>
+        <div class="stack-row"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>UI/UX</span></div>
+      </div>
+      <div class="project-card">
+        <div class="pnum">PROJECT / 02</div>
+        <h3>Attendance Management System</h3>
+        <p>A fully functional web-based attendance tracking system with a MySQL backend, handling real record storage and retrieval.</p>
+        <div class="stack-row"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>MySQL</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:40px;">
+      <div class="eyebrow" style="margin-bottom:20px;">Certificates & Achievements</div>
+      <div class="pill-row">
+        <div class="pill"><span class="dot"></span>Latest Trend in Robotics Technology</div>
+        <div class="pill"><span class="dot"></span>Digital Productivity with AI</div>
+        <div class="pill"><span class="dot"></span>Java Assessment</div>
+        <div class="pill"><span class="dot"></span>Intra-College Computer Networks Skill Competition, 2025</div>
+        <div class="pill"><span class="dot"></span>Career Guidance Session, Grad Guru Innovation, 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="trace-divider"><div class="trace-line"></div><div class="trace-node"></div><div class="trace-line"></div></div></div>
+
+<!-- FEEDBACK -->
+<section id="feedback">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Feedback</div>
+      <h2>Tell me what you think.</h2>
+      <p>This actually saves — every message below is real and visible to anyone who visits this page.</p>
+    </div>
+    <div class="feedback-note">⚠ Feedback posted here is public. Anyone who opens this portfolio can read it — don't include anything private.</div>
+
+    <div class="feedback-layout">
+      <div>
+        <form id="feedback-form">
+          <div class="form-group">
+            <label for="fb-name">Your name</label>
+            <input type="text" id="fb-name" placeholder="e.g. Priya Sharma" maxlength="60" required />
+          </div>
+          <div class="form-group">
+            <label>Rating</label>
+            <div class="star-row" id="star-row">
+              <span class="star" data-val="1">★</span>
+              <span class="star" data-val="2">★</span>
+              <span class="star" data-val="3">★</span>
+              <span class="star" data-val="4">★</span>
+              <span class="star" data-val="5">★</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="fb-msg">Message</label>
+            <textarea id="fb-msg" rows="4" placeholder="Thoughts on the portfolio, a project, or advice for Rohit..." maxlength="500" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Post Feedback</button>
+          <div class="submit-status" id="submit-status"></div>
+        </form>
+      </div>
+      <div>
+        <div class="feedback-wall" id="feedback-wall">
+          <div class="fb-loading">Loading feedback…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="social">
+    <a href="https://www.linkedin.com/in/rohit-2005c/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://github.com/rohit2005ch" target="_blank" rel="noopener">GitHub</a>
+    <a href="mailto:rohit2005c@gmail.com">rohit2005c@gmail.com</a>
+    <a href="tel:9805782775">9805782775</a>
+  </div>
+  <div>© 2026 Rohit Chauhan. Built with care in Mandi, Himachal Pradesh.</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ---------------- 3D Hero: rotating wireframe peak ---------------- */
+(function(){
+  const canvas = document.getElementById('hero-canvas');
+  const heroSection = canvas.closest('.hero');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, heroSection.clientWidth / heroSection.clientHeight, 0.1, 100);
+  camera.position.set(0, 0.6, 6.2);
+
+  const isMobile = window.matchMedia('(max-width: 700px)').matches || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  function resize(){
+    const w = heroSection.clientWidth, h = heroSection.clientHeight;
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  window.addEventListener('orientationchange', resize);
+
+  // Icosahedron wireframe as "crystal peak" (lower detail on mobile for smooth 60fps)
+  const geo = new THREE.IcosahedronGeometry(1.9, isMobile ? 0 : 1);
+  const wireGeo = new THREE.WireframeGeometry(geo);
+  const mat = new THREE.LineBasicMaterial({ color: 0x0e9c8c, transparent: true, opacity: isMobile ? 0.35 : 0.6 });
+  const wireframe = new THREE.LineSegments(wireGeo, mat);
+  wireframe.position.set(isMobile ? 0.4 : 1.4, isMobile ? -0.8 : 0.2, isMobile ? -1.5 : 0);
+  scene.add(wireframe);
+
+  // subtle solid fill for depth
+  const fillMat = new THREE.MeshBasicMaterial({ color: 0x0e9c8c, transparent: true, opacity: 0.06 });
+  const fillMesh = new THREE.Mesh(geo, fillMat);
+  fillMesh.position.copy(wireframe.position);
+  scene.add(fillMesh);
+
+  // small orbiting nodes
+  const nodes = [];
+  const nodeCount = isMobile ? 5 : 10;
+  for(let i=0;i<nodeCount;i++){
+    const nGeo = new THREE.SphereGeometry(0.035, 8, 8);
+    const nMat = new THREE.MeshBasicMaterial({ color: i % 3 === 0 ? 0xc4740b : 0x0e9c8c });
+    const node = new THREE.Mesh(nGeo, nMat);
+    const radius = 2.4 + Math.random()*0.8;
+    const theta = Math.random()*Math.PI*2;
+    const phi = Math.random()*Math.PI;
+    node.userData = { radius, theta, phi, speed: 0.15 + Math.random()*0.25 };
+    scene.add(node);
+    nodes.push(node);
+  }
+
+  let mouseX = 0, mouseY = 0;
+  window.addEventListener('mousemove', (e)=>{
+    mouseX = (e.clientX / window.innerWidth - 0.5);
+    mouseY = (e.clientY / window.innerHeight - 0.5);
+  });
+
+  const clock = new THREE.Clock();
+  function animate(){
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+
+    wireframe.rotation.y = t * 0.15 + mouseX * 0.6;
+    wireframe.rotation.x = Math.sin(t*0.1) * 0.15 + mouseY * 0.3;
+    fillMesh.rotation.copy(wireframe.rotation);
+    fillMesh.position.copy(wireframe.position);
+
+    nodes.forEach(n=>{
+      const { radius, theta, phi, speed } = n.userData;
+      const a = theta + t * speed;
+      n.position.set(
+        wireframe.position.x + radius * Math.sin(phi) * Math.cos(a),
+        wireframe.position.y + radius * Math.cos(phi) * 0.6,
+        wireframe.position.z + radius * Math.sin(phi) * Math.sin(a)
+      );
+    });
+
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+/* ---------------- Mobile nav toggle ---------------- */
+(function(){
+  const toggle = document.getElementById('nav-toggle');
+  const links = document.getElementById('nav-links');
+  const backdrop = document.getElementById('nav-backdrop');
+
+  function closeMenu(){
+    toggle.classList.remove('open');
+    links.classList.remove('open');
+    backdrop.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  function openMenu(){
+    toggle.classList.add('open');
+    links.classList.add('open');
+    backdrop.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  toggle.addEventListener('click', ()=>{
+    links.classList.contains('open') ? closeMenu() : openMenu();
+  });
+  backdrop.addEventListener('click', closeMenu);
+  links.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeMenu));
+  window.addEventListener('resize', ()=>{
+    if(window.innerWidth > 700) closeMenu();
+  });
+})();
+
+/* ---------------- Tilt effect on skill cards ---------------- */
+document.querySelectorAll('.tilt').forEach(card=>{
+  card.addEventListener('mousemove', (e)=>{
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rotX = ((y / rect.height) - 0.5) * -10;
+    const rotY = ((x / rect.width) - 0.5) * 10;
+    card.style.transform = `perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-2px)`;
+  });
+  card.addEventListener('mouseleave', ()=>{
+    card.style.transform = 'perspective(600px) rotateX(0) rotateY(0)';
+  });
+});
+
+/* ---------------- Star rating ---------------- */
+let currentRating = 0;
+const stars = document.querySelectorAll('#star-row .star');
+stars.forEach(star=>{
+  star.addEventListener('click', ()=>{
+    currentRating = parseInt(star.dataset.val);
+    stars.forEach(s=> s.classList.toggle('active', parseInt(s.dataset.val) <= currentRating));
+  });
+});
+
+/* ---------------- Feedback wall: persistent storage ---------------- */
+const wall = document.getElementById('feedback-wall');
+const form = document.getElementById('feedback-form');
+const statusEl = document.getElementById('submit-status');
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function renderFeedback(items){
+  if(!items.length){
+    wall.innerHTML = '<div class="fb-empty">No feedback yet — be the first to leave a note.</div>';
+    return;
+  }
+  items.sort((a,b)=> b.ts - a.ts);
+  wall.innerHTML = items.map(item=>{
+    const starStr = '★'.repeat(item.rating || 0) + '☆'.repeat(5 - (item.rating || 0));
+    const date = new Date(item.ts).toLocaleString();
+    return `<div class="feedback-item">
+      <div class="fb-top">
+        <span class="fb-name">${escapeHtml(item.name)}</span>
+        <span class="fb-stars">${starStr}</span>
+      </div>
+      <div class="fb-msg">${escapeHtml(item.message)}</div>
+      <div class="fb-time">${date}</div>
+    </div>`;
+  }).join('');
+}
+
+async function loadFeedback(){
+  try{
+    const list = await window.storage.list('feedback:', true);
+    if(!list || !list.keys || !list.keys.length){
+      renderFeedback([]);
+      return;
+    }
+    const items = [];
+    for(const key of list.keys){
+      try{
+        const res = await window.storage.get(key, true);
+        if(res && res.value){
+          items.push(JSON.parse(res.value));
+        }
+      }catch(e){ /* skip unreadable key */ }
+    }
+    renderFeedback(items);
+  }catch(e){
+    wall.innerHTML = '<div class="fb-empty">Couldn\'t load feedback right now. Try refreshing.</div>';
+  }
+}
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = document.getElementById('fb-name').value.trim();
+  const message = document.getElementById('fb-msg').value.trim();
+  if(!name || !message){
+    statusEl.textContent = 'Please fill in your name and a message.';
+    statusEl.className = 'submit-status err';
+    return;
+  }
+  const entry = {
+    name,
+    message,
+    rating: currentRating,
+    ts: Date.now()
+  };
+  const key = 'feedback:' + entry.ts + '-' + Math.random().toString(36).slice(2,8);
+  statusEl.textContent = 'Posting…';
+  statusEl.className = 'submit-status';
+  try{
+    const result = await window.storage.set(key, JSON.stringify(entry), true);
+    if(!result){
+      throw new Error('Storage returned no result');
+    }
+    statusEl.textContent = 'Thanks — your feedback is posted!';
+    statusEl.className = 'submit-status ok';
+    form.reset();
+    currentRating = 0;
+    stars.forEach(s=> s.classList.remove('active'));
+    loadFeedback();
+  }catch(err){
+    statusEl.textContent = 'Something went wrong — please try again.';
+    statusEl.className = 'submit-status err';
+  }
+});
+
+loadFeedback();
+</script>
+</body>
+</html>
